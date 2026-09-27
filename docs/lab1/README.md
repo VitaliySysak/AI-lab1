@@ -16,7 +16,7 @@
 
 ## Прогони CI
 - Контракт /api/health до реалізації — червоний (падає «Перевірка типів», TS2307): [run 36324776233](https://github.com/VitaliySysak/AI-lab1/actions/runs/36324776233) · коміт `768ecab`
-- Зелений прогін на main: <посилання>
+- Зелений прогін на main: [run 36328059801](https://github.com/VitaliySysak/AI-lab1/actions/runs/36328059801) · коміт `10a92e7` (оновити перед поданням)
 - Зелений job «Playwright (не блокує)»: <посилання> · копія скріншота: docs/lab1/e2e-<назва-сторінки>.png
 - Червоний прогін «поганого патча»: <посилання на PR і прогін> · яка перевірка спрацювала:
 
@@ -25,9 +25,10 @@
 - lab1/agents-md-40-cut: [гілка](https://github.com/VitaliySysak/AI-lab1/tree/lab1/agents-md-40-cut) · [прогін CI](https://github.com/VitaliySysak/AI-lab1/actions/runs/36324052175)
 
 ## Та сама задача в двох інструментах
-- lab1/health-claude-code: <посилання на гілку> · порівняння з базовим комітом: <посилання>
-- lab1/health-antigravity: <посилання на гілку> · порівняння з базовим комітом: <посилання>
-- У main злито: <гілка>, коміт <sha>
+- Базовий коміт (контракт і червоний тест): `768ecab` · [червоний CI](https://github.com/VitaliySysak/AI-lab1/actions/runs/36324776233)
+- lab1/health-claude-code: [гілка](https://github.com/VitaliySysak/AI-lab1/tree/lab1/health-claude-code) · [порівняння з базовим комітом](https://github.com/VitaliySysak/AI-lab1/compare/768ecab...lab1/health-claude-code) · [зелений CI](https://github.com/VitaliySysak/AI-lab1/actions/runs/36327086206)
+- lab1/health-antigravity: [гілка](https://github.com/VitaliySysak/AI-lab1/tree/lab1/health-antigravity) · [порівняння з базовим комітом](https://github.com/VitaliySysak/AI-lab1/compare/768ecab...lab1/health-antigravity) · [зелений CI](https://github.com/VitaliySysak/AI-lab1/actions/runs/36327889943)
+- У main злито: lab1/health-claude-code, коміт `f816e2e`
 
 ## Деплой і траси
 - Ендпоінт: <URL> · рантайм:

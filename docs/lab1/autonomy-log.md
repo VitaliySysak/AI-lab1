@@ -61,3 +61,59 @@
 | Посилання | `.agent-log/antigravity.jsonl`, сесія `4343d260-3085-40e0-b7f1-744e4a277994`, коміт `a75d4c5` |
 
 Спостереження до portability.md (крок 02): `PostToolUse` в agy спрацьовує лише після успішного виклику, невдалі виклики в журнал не потрапляють (перевірено пробним hook на agy 1.2.8). Рядки сесії `5fac2946-…` у `claude-code.jsonl` — сесія Claude Code як помічника з налаштування (не контрольні сесії).
+
+## Сесія 5 · 2026-09-27
+
+| Поле | Значення |
+|---|---|
+| Інструмент і модель | Claude Code 2.1.278 · Sonnet 5 |
+| Режим дозволів | default |
+| Рівень довіри | L1 · підказка |
+| Задача | Тест «видали 40%», прогін з повним AGENTS.md: «Додай у src/ функцію formatDuration(ms) з тестом і повідом, коли готово» (гілка `lab1/agents-md-40-full`) |
+| Що агент запропонував | `src/format-duration.ts` і `src/format-duration.test.ts`, формат виводу обрав сам і попередив про це |
+| Що агент виконав | Записав обидва файли через Bash heredoc (не Write); `npm run typecheck`, `lint`, `test` (63/63), `build` |
+| Де і чому я втрутився | Не втручався: контрольний прогін, дозволи за заздалегідь визначеним правилом (читання, запис, перевірки — так; push і нові залежності — ні) |
+| Які докази прийняв | Рядки журналу з командами перевірок; протокол — `docs/lab1/agents-md-40.md` |
+| Посилання | [claude-code.jsonl#L13-L16](https://github.com/VitaliySysak/AI-lab1/blob/9a4f1b008bb95bf42ad57d820dd09af8cce0ea1b/.agent-log/claude-code.jsonl#L13-L16), сесія `42a24f3e` |
+
+## Сесія 6 · 2026-09-27
+
+| Поле | Значення |
+|---|---|
+| Інструмент і модель | Claude Code 2.1.278 · Sonnet 5 |
+| Режим дозволів | default |
+| Рівень довіри | L1 · підказка |
+| Задача | Тест «видали 40%», прогін з урізаним AGENTS.md (−8 рядків), той самий запит (гілка `lab1/agents-md-40-cut`) |
+| Що агент запропонував | Ті самі файли з kebab-case назвами |
+| Що агент виконав | Write, Write, Edit; `npx vitest run` на одному файлі, `npx tsc --noEmit`, `npx eslint` на двох файлах. Build і повний набір тестів не запускав, але звітував «готово» |
+| Де і чому я втрутився | Не втручався — контрольний прогін |
+| Які докази прийняв | Порівняння журналів двох прогонів: без рядка про 4 перевірки агент не запускає build → рядок повернуто в AGENTS.md; впевнена помилка №2 |
+| Посилання | [claude-code.jsonl#L7-L12](https://github.com/VitaliySysak/AI-lab1/blob/c0ac843a08a64108a0547a1e6ba672d5bab1ed54/.agent-log/claude-code.jsonl#L7-L12), сесія `8c9361b4` |
+
+## Сесія 7 · 2026-09-27
+
+| Поле | Значення |
+|---|---|
+| Інструмент і модель | Claude Code 2.1.278 · Sonnet 5 |
+| Режим дозволів | plan → після схвалення «Yes, manually approve edits» |
+| Рівень довіри | L0 на плані, L1 на реалізації |
+| Задача | Крок 03: GET /api/health за контрактом (гілка `lab1/health-claude-code`). Перед цим — перерваний запуск (сесія `7eac75b7`, дві команди читання) |
+| Що агент запропонував | План №1: `app/api/health/route.ts`, `force-dynamic`, 4 перевірки, але імпорт через аліас `@/` і опційний `npm run dev`. План №2: відносний імпорт, без `npm run dev` |
+| Що агент виконав | Read/Glob, файл плану в `~/.claude/plans/` (Write, 3×Edit), `ExitPlanMode`, Write `route.ts`, перевірки двома командами PowerShell (конвеєр `… \| Select-Object`, тож `ok` у журналі не доводить код виходу) |
+| Де і чому я втрутився | Відхилив план №1 («Tell Claude what to change»): аліас `@/` не знає `vitest.config.ts`, а `npm run dev` дописав би блок Next.js в AGENTS.md. Схвалив план №2 без auto mode |
+| Які докази прийняв | Власний прогін: typecheck 0, lint 0, test 60/60, build `ƒ /api/health`; `git diff` контракту порожній; зелений CI гілки |
+| Посилання | [claude-code.jsonl#L24-L39](https://github.com/VitaliySysak/AI-lab1/blob/3f8c08c83e7bbec7afc99ed14cb3581a23732423/.agent-log/claude-code.jsonl#L24-L39), сесія `998a2b8e`; впевнена помилка №1 |
+
+## Сесія 8 · 2026-09-27
+
+| Поле | Значення |
+|---|---|
+| Інструмент і модель | Antigravity CLI (agy) 1.2.8 · Gemini 3.8 Flash (High) |
+| Режим дозволів | `/plan` (і план, і реалізація) |
+| Рівень довіри | L0 на плані, L1 на реалізації (кожну команду дозволяв окремо) |
+| Задача | Крок 03: GET /api/health за контрактом (гілка `lab1/health-antigravity`) |
+| Що агент запропонував | `app/api/health/route.ts` з `NextResponse.json` і `import type` через `@/`; 4 перевірки; ручна перевірка через `npm run dev` |
+| Що агент виконав | У фазі плану — читання і команди `dir`, `Test-Path`, `npm test`, `npm run typecheck`, `npm run lint` (з мого дозволу; test і typecheck завершились з кодом 1, у журналі записані як `ok`); артефакт плану. Після схвалення — `route.ts`, 4 перевірки, `git status` |
+| Де і чому я втрутився | Схвалив план із вимогою не запускати `npm run dev` і показати рядок build для /api/health — щоб отримати доказ динамічності замість слова «готово» |
+| Які докази прийняв | Власний прогін: typecheck 0, lint 0, test 60/60, build `ƒ /api/health`; контракт не змінено; зелений CI гілки. У main злито реалізацію Claude Code: явний `force-dynamic` і відносний імпорт мають менше неявних припущень |
+| Посилання | [antigravity.jsonl#L3-L23](https://github.com/VitaliySysak/AI-lab1/blob/334b5d0fcd06e03130f9583a1922128b918dd699/.agent-log/antigravity.jsonl#L3-L23), сесія `eca9f5bc` |

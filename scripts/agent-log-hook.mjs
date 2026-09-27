@@ -31,9 +31,13 @@ try {
     'AbsolutePath', 'TargetFile', 'DirectoryPath', 'SearchPath', 'SearchDirectory',
     'CommandLine', 'Query', 'Pattern', 'Url',
   ];
+  // Тіло heredoc (cat > file <<'EOF' … EOF) — це вміст файлу: вирізаємо його до обрізання,
+  // щоб у журналі лишилися сама команда і те, що йде після heredoc.
+  const stripHeredoc = (s) =>
+    s.replace(/<<-?\s*(['"]?)(\w+)\1[^\n]*\n[\s\S]*?\n\s*\2(?=\s|$)/g, '<<$2 … $2');
   const input = {};
   for (const key of KEYS) {
-    if (typeof args[key] === 'string') input[key] = args[key].slice(0, 200);
+    if (typeof args[key] === 'string') input[key] = stripHeredoc(args[key]).slice(0, 200);
   }
 
   // Antigravity передає помилку в полі error (порожній рядок — успіх).

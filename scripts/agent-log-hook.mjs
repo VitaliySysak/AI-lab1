@@ -40,8 +40,27 @@ try {
     if (typeof args[key] === 'string') input[key] = stripHeredoc(args[key]).slice(0, 200);
   }
 
-  // Antigravity передає помилку в полі error (порожній рядок — успіх).
-  const result = typeof event.error === 'string' && event.error !== '' ? 'error' : resultArg;
+  // Antigravity передає помилку в полі error (порожній рядок — успіх). Але команда, що
+  // завершилась з ненульовим кодом, для нього теж успіх: код виходу є лише в транскрипті
+  // (запис із тим самим step_index, текст «exited with code N»).
+  const exitCodeFromTranscript = () => {
+    if (tool !== 'run_command' || typeof event.transcriptPath !== 'string') return undefined;
+    try {
+      const lines = readFileSync(event.transcriptPath, 'utf8').trim().split('\n');
+      for (let i = lines.length - 1; i >= 0; i -= 1) {
+        const step = JSON.parse(lines[i]);
+        if (step.step_index === event.stepIdx) {
+          const match = JSON.stringify(step.content ?? '').match(/exited with code (\d+)/);
+          return match ? Number(match[1]) : undefined;
+        }
+      }
+    } catch {
+      // Транскрипт недоступний — лишаємо результат за полем error.
+    }
+    return undefined;
+  };
+  const failed = (typeof event.error === 'string' && event.error !== '') || (exitCodeFromTranscript() ?? 0) !== 0;
+  const result = failed ? 'error' : resultArg;
   const session = event.session_id ?? event.conversationId ?? 'unknown';
 
   // Antigravity запускає hook з теки .agents/, тому корінь беремо з події.

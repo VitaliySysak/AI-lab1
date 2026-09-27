@@ -1,6 +1,7 @@
 export const COURSE_TITLE = 'Агентна інженерія';
 export const COURSE_SUBTITLE = 'Стартовий шаблон';
 export const TASK_HINT = 'Ваше завдання: додати ендпоінт /api/health';
+export const HEALTH_LINK_LABEL = 'Стан сервісу';
 
 export default function HomePage() {
   return (
@@ -32,6 +33,9 @@ export default function HomePage() {
       >
         {TASK_HINT}
       </p>
+      <a href="/api/health" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>
+        {HEALTH_LINK_LABEL}
+      </a>
     </main>
   );
 }

@@ -38,15 +38,19 @@ function pick(kind: string): { model: Model; spec: ModelSpec; form: string } {
     const key = process.env.GEMINI_API_KEY;
     if (!key) throw new Error('GEMINI_API_KEY порожній: заповніть .env.local');
     const spec = CATALOG['gemini-3.8-flash'];
-    return {
-      spec,
-      form: 'chat-completions',
-      model: chatCompletionsModel({
-        url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
-        model: spec.id,
-        headers: { authorization: `Bearer ${key}` },
-      }),
+    const chat = chatCompletionsModel({
+      url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+      model: spec.id,
+      headers: { authorization: `Bearer ${key}` },
+    });
+    // Безкоштовний рівень gemini-3.8-flash — 5 запитів на хвилину (HTTP 429 «limit: 5»),
+    // а кожен крок циклу — окремий запит. Пауза перед кожним викликом, крім першого, тримає нас під лімітом.
+    let calls = 0;
+    const throttled: Model = async (system, messages, tools) => {
+      if (calls++ > 0) await new Promise((resolve) => setTimeout(resolve, 13_000));
+      return chat(system, messages, tools);
     };
+    return { spec, form: 'chat-completions', model: throttled };
   }
   const spec = MODELS.local;
   if (kind === 'ollama-messages') {

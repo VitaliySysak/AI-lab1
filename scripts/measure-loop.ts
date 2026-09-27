@@ -60,6 +60,9 @@ function pick(kind: string): { model: Model; spec: ModelSpec; form: string } {
 
 const [kind = 'ollama-messages', runsArg = '1'] = process.argv.slice(2);
 const { model, spec, form } = pick(kind);
+// qwen3 — модель із роздумами: без цього перемикача вона витрачала весь max_tokens (2048)
+// на міркування і не встигала видати JSON (перша серія з 10 прогонів — 2 з 10, див. comparison.md).
+const system = kind.startsWith('ollama') ? `${SYSTEM}\n/no_think` : SYSTEM;
 const runs = Number(runsArg);
 const tools = createTools(process.cwd());
 const log = jsonlLogger('.agent-log/agent-loop.jsonl');
@@ -73,7 +76,7 @@ for (let i = 1; i <= runs; i++) {
   const started = performance.now();
   try {
     const r = await runAgentLoop({
-      model, tools, system: SYSTEM, task: TASK, output: Proposal, maxSteps: 12, tokenBudget: 150_000, session, log,
+      model, tools, system, task: TASK, output: Proposal, maxSteps: 12, tokenBudget: 150_000, session, log,
     });
     const ms = Math.round(performance.now() - started);
     const u = r.usage;

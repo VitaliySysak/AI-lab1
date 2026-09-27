@@ -50,7 +50,13 @@ function pick(kind: string): { model: Model; spec: ModelSpec; form: string } {
   }
   const spec = MODELS.local;
   if (kind === 'ollama-messages') {
-    return { spec, form: 'messages', model: messagesModel({ url: `${spec.baseUrl}/v1/messages`, model: spec.id }) };
+    // 6144, а не типові 2048: навіть з /no_think qwen3 міркує ~2000 токенів перед відповіддю.
+    // Потребує контексту Ollama ≥ 8192 (OLLAMA_CONTEXT_LENGTH), інакше вихід не вміститься.
+    return {
+      spec,
+      form: 'messages',
+      model: messagesModel({ url: `${spec.baseUrl}/v1/messages`, model: spec.id, maxTokens: 6144 }),
+    };
   }
   if (kind === 'ollama-chat') {
     return { spec, form: 'chat-completions', model: chatCompletionsModel({ url: `${spec.baseUrl}/v1/chat/completions`, model: spec.id }) };

@@ -17,7 +17,7 @@
 ## Прогони CI
 - Контракт /api/health до реалізації — червоний (падає «Перевірка типів», TS2307): [run 36324776233](https://github.com/VitaliySysak/AI-lab1/actions/runs/36324776233) · коміт `768ecab`
 - Зелений прогін на main: [run 36328059801](https://github.com/VitaliySysak/AI-lab1/actions/runs/36328059801) · коміт `10a92e7` (оновити перед поданням)
-- Зелений job «Playwright (не блокує)»: <посилання> · копія скріншота: docs/lab1/e2e-<назва-сторінки>.png
+- Зелений job «Playwright (не блокує)», крок «E2E-тести» — success: [job 108686887652](https://github.com/VitaliySysak/AI-lab1/actions/runs/36343066555/job/108686887652) (прогін 36343066555, коміт `bcf580d`) · копія скріншота з артефакту `playwright-artifacts`: [docs/lab1/e2e-home.png](e2e-home.png)
 - Червоний прогін «поганого патча»: <посилання на PR і прогін> · яка перевірка спрацювала:
 
 ## Тест «видали 40%»

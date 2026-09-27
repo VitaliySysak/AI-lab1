@@ -201,3 +201,17 @@ AGENTS.md, навичка `add-api-route` і промпти — мовою: ук
 | Посилання | [claude-code.jsonl#L178-L180](https://github.com/VitaliySysak/AI-lab1/blob/221f712fd3f9cea3058f342ab92620dabc1e4a66/.agent-log/claude-code.jsonl#L178-L180); [antigravity.jsonl#L64-L68](https://github.com/VitaliySysak/AI-lab1/blob/1dc6366878c0cfae40c77cbab24266fe3d18e4e6/.agent-log/antigravity.jsonl#L64-L68); [context-cost.md](context-cost.md) |
 
 Спостереження до кроку 05: hook заборони блокує і невинні команди, у тексті яких є «.env» — зокрема команду сесії-помічника, що дописувала цей журнал через heredoc (рядок denied сесії `5fac2946`). Це межа текстового зіставлення: hook не відрізняє доступ до файлу від згадки в тексті.
+
+## Сесія 14 · 2026-09-27
+
+| Поле | Значення |
+|---|---|
+| Інструмент і модель | Claude Code 2.1.278 · Opus 5.5 |
+| Режим дозволів | plan → після схвалення manual (default) |
+| Рівень довіри | L0 на плані, L1 на реалізації |
+| Задача | Крок 06: посилання «Стан сервісу» на /api/health на головній, наявні тексти не змінювати |
+| Що агент запропонував | План: лише `app/page.tsx` — константа `HEALTH_LINK_LABEL` і `<a href="/api/health">` під підказкою; перевірки typecheck, lint, test, build, e2e (`~/.claude/plans/calm-pondering-hinton.md`) |
+| Що агент виконав | 2 Edit `app/page.tsx`; перевірки; `npm run e2e` двічі впав (немає браузера Playwright) — агент не назвав це «готово» і запропонував встановити браузер з мого дозволу |
+| Де і чому я втрутився | Схвалив план сам, без додаткових правок; браузер встановив сам (`npx playwright install chromium` — завантаження на машину). Тест `tests/health-link.spec.ts` написав окремо (помічник), він не залежить від агента |
+| Які докази прийняв | Diff: лише 4 рядки в `app/page.tsx`; локально `npm run e2e` — 2 passed; CI: job e2e, крок «E2E-тести» success; скріншот з артефакту CI — `docs/lab1/e2e-home.png`, посилання видно |
+| Посилання | [claude-code.jsonl#L204-L216](https://github.com/VitaliySysak/AI-lab1/blob/bcf580dad3392199bb379ad0d3c562f4a47a0a51/.agent-log/claude-code.jsonl#L204-L216), сесія `6b916d13`; [job e2e](https://github.com/VitaliySysak/AI-lab1/actions/runs/36343066555/job/108686887652) |

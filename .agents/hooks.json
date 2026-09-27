@@ -12,5 +12,19 @@
         ]
       }
     ]
+  },
+  "guard-env": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ../scripts/guard-env.mjs antigravity",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }

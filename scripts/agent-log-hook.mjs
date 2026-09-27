@@ -64,7 +64,8 @@ try {
   const session = event.session_id ?? event.conversationId ?? 'unknown';
 
   // Antigravity запускає hook з теки .agents/, тому корінь беремо з події.
-  const root = process.env.CLAUDE_PROJECT_DIR ?? event.workspacePaths?.[0] ?? process.cwd();
+  // `||`, а не `??`: порожня змінна середовища означає «не задано».
+  const root = process.env.CLAUDE_PROJECT_DIR || event.workspacePaths?.[0] || process.cwd();
   const dir = join(root, '.agent-log');
   mkdirSync(dir, { recursive: true });
   const row = { ts: new Date().toISOString(), tool, input, result, session, source };

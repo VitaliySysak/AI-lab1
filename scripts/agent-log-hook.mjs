@@ -30,6 +30,8 @@ try {
     'file_path', 'path', 'command', 'pattern', 'url', 'skill',
     'AbsolutePath', 'TargetFile', 'DirectoryPath', 'SearchPath', 'SearchDirectory',
     'CommandLine', 'Query', 'Pattern', 'Url',
+    // Context7 (MCP): назва бібліотеки й текст запиту до документації — не вміст файлів.
+    'libraryName', 'libraryId', 'query',
   ];
   // Тіло heredoc (cat > file <<'EOF' … EOF) — це вміст файлу: вирізаємо його до обрізання,
   // щоб у журналі лишилися сама команда і те, що йде після heredoc.

@@ -66,6 +66,18 @@ The agent does not read or edit files with secrets: secrets are managed by a hum
 The model is chosen by role from the model registry, not by an identifier string. Model prices and retirement dates are checked against the vendor's page, not from memory. Commit messages follow the Conventional Commits format. All files created in the source code folder must be named in kebab-case.
 ```
 
+## Вартість у трасах Langfuse (крок 10)
+
+Langfuse рахує вартість сам за визначенням моделі. Для gemini-3.8-flash визначення в Langfuse вже є, і його ціна збіглася з колонкою «$ за прайсом» models.ts до останнього знака (локальна траса 2026-09-28 11:59, [traces-list.png](traces/traces-list.png)):
+
+| Виклик моделі | Вхідні | Вихідні | За models.ts ($0.75 / $3.75 за 1M) | Langfuse |
+|---|---|---|---|---|
+| chat gemini-3.8-flash, 11:59:55 | 138 | 173 | 0.0001035 + 0.00064875 = $0.000752 | $0.000752 |
+| chat gemini-3.8-flash, 11:59:52 | 50 | 45 | 0.0000375 + 0.00016875 = $0.000206 | $0.000206 |
+
+Для `nvidia/nemotron-3-super-120b-a12b:free` (OpenRouter) визначення не було — вартість «—»; додано власне визначення (Settings → Models, ціни 0 / 0 — модель `:free`), після чого нові траси показують $0.00. Визначення не застосовується заднім числом: траси 12:34–12:35 лишились із «—».
+Облік провайдера неточний: в одному виклику OpenRouter/NVIDIA повернув `outputTokens: 293` при `reasoningTokens: 326` → `textTokens: -33`. Токени роздумів провайдер рахує окремо від виходу; для оцінки вартості брати `outputTokens`, а не суму text + reasoning.
+
 ## 4. Три прогони (крок 11)
 | прогін | провайдер | модель | вхідні | кешовані | вихідні | оцінка входу до виклику | похибка % | $ фактично | $ за прайсом models.ts | затримка, мс | дата |
 |---|---|---|---|---|---|---|---|---|---|---|---|

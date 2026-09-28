@@ -31,9 +31,16 @@
 - У main злито: lab1/health-claude-code, коміт `f816e2e`
 
 ## Деплой і траси
-- Ендпоінт: <URL> · рантайм:
-- Система трасування: · скріншоти: docs/lab1/traces/
-- Публічні посилання на траси (якщо система їх дає):
+- Ендпоінт: `POST https://ai-lab1-sage.vercel.app/api/agent` · рантайм: Vercel Hobby, Node.js (Next.js 16 App Router), `maxDuration = 60`
+- Модель: OpenRouter `:free` (id у змінній `OPENROUTER_MODEL`, зараз `nvidia/nemotron-3-super-120b-a12b:free`), `maxRetries: 0`, ліміт 3 кроки, інструмент `getTime`. Спершу був Gemini free tier — замінено через денний ліміт 20 запитів і 503 (див. autonomy-log.md)
+- Система трасування: Langfuse Cloud Hobby (OpenTelemetry + `@langfuse/vercel-ai-sdk`, `functionId: lab01-agent`) · скріншоти: [docs/lab1/traces/](traces/)
+- Знімки: [traces-list.png](traces/traces-list.png) — виклики моделі з токенами й вартістю; [trace-1.png](traces/trace-1.png), [trace-2.png](traces/trace-2.png), [trace-3.png](traces/trace-3.png) — три траси з деплою (2026-09-28 12:44:55, 12:45:09, 12:45:52): дерево кроків, `getTime`, токени, $0.00; [trace-1-attributes.png](traces/trace-1-attributes.png) — `gen_ai.agent.name = lab01-agent`, провайдер `openrouter`, модель
+- Публічні посилання на траси (якщо система їх дає): …
+- Команда виклику (Git Bash):
+
+```bash
+printf '{"prompt":"%s"}' 'Котра зараз година?' | curl -s -X POST https://ai-lab1-sage.vercel.app/api/agent -H 'Content-Type: application/json; charset=utf-8' --data-binary @-
+```
 
 ## Докази за критеріями
 | Критерій | Файл або посилання |

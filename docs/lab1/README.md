@@ -36,6 +36,7 @@
 - Тест підтвердження AI SDK (крок 09) зелений у CI: [run 36398793934](https://github.com/VitaliySysak/AI-lab1/actions/runs/36398793934) · коміт `6fb7ae5`
 - Гілка `lab1/health-loop` — червоний CI навмисно: застосована пропозиція власного циклу не проходить `health.test.ts` (1/3), це доказ для comparison.md: [run 36348617645](https://github.com/VitaliySysak/AI-lab1/actions/runs/36348617645)
 - Зелений job «Playwright (не блокує)», крок «E2E-тести» — success: [job 108686887652](https://github.com/VitaliySysak/AI-lab1/actions/runs/36343066555/job/108686887652) (прогін 36343066555, коміт `bcf580d`) · копія скріншота з артефакту `playwright-artifacts`: [docs/lab1/e2e-home.png](e2e-home.png)
+- Самоперевірка брам до «поганого патча» (2026-09-28): тимчасова гілка `tmp/break-check` з навмисно зламаним тестом (`toBe(200)` → `toBe(201)` у `tests/health.test.ts`) — [run 36409965999](https://github.com/VitaliySysak/AI-lab1/actions/runs/36409965999), коміт `7093f85`: job «Типи, лінт, тести, збірка» червоний на кроці «Юніт-тести», e2e пропущено; гілку після перевірки видалено
 - Червоний прогін «поганого патча»: <посилання на PR і прогін> · яка перевірка спрацювала:
 
 ## Тест «видали 40%»

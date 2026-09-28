@@ -1,14 +1,19 @@
 import { after } from 'next/server';
 import { ToolLoopAgent, tool, isStepCount } from 'ai';
-import { google } from '@ai-sdk/google';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { z } from 'zod';
 import { langfuseSpanProcessor } from '@/src/otel/langfuse';
-import { CATALOG } from '@/src/models';
 
 export const maxDuration = 60; // Hobby: максимум 300 с
 
+// Шлюз OpenRouter замість Gemini: безкоштовний рівень Gemini вичерпувався (20 запитів/добу) і віддавав 503.
+// Id :free-моделі — зі змінної, бо список безкоштовних моделей змінюється.
+// Без ?? '' строгий tsconfig не пропустить undefined (exactOptionalPropertyTypes).
+const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY ?? '' });
+
 const agent = new ToolLoopAgent({
-  model: google(CATALOG['gemini-3.8-flash'].id), // дешева Flash-модель із безкоштовним рівнем
+  model: openrouter.chat(process.env.OPENROUTER_MODEL ?? 'qwen/qwen3.8-27b:free'),
+  maxRetries: 0, // на безкоштовному рівні кожен повтор — ще один запит із денного ліміту
   instructions: 'Для поточного часу використовуй інструмент getTime.',
   tools: {
     getTime: tool({

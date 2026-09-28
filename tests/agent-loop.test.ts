@@ -251,4 +251,10 @@ describe('адаптери форм API (без мережі)', () => {
     const model = chatCompletionsModel({ url: 'https://example.test/v1/chat/completions', model: 'm', fetch: send });
     await expect(model('s', history, tools)).rejects.toThrow('HTTP 429');
   });
+
+  it('шлюз повернув HTTP 200 з тілом error (без choices) — зрозуміла помилка з текстом шлюзу', async () => {
+    const { send } = fakeFetch({ error: { code: 502, message: 'Upstream error from Nvidia: Service temporarily overloaded' } });
+    const model = chatCompletionsModel({ url: 'https://openrouter.ai/api/v1/chat/completions', model: 'm:free', fetch: send });
+    await expect(model('s', history, tools)).rejects.toThrow('Upstream error from Nvidia');
+  });
 });

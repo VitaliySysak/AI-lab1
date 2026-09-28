@@ -101,10 +101,12 @@ interface ChatToolCall {
 }
 
 interface ChatResponse {
-  readonly choices: readonly {
+  /** Шлюз (OpenRouter) при збої постачальника буває відповідає HTTP 200 з полем error і без choices. */
+  readonly choices?: readonly {
     readonly message: { readonly content?: string | null; readonly tool_calls?: readonly ChatToolCall[] };
   }[];
   readonly usage: ChatUsage;
+  readonly error?: { readonly message?: string };
 }
 
 /** Аргументи тут — JSON-РЯДОК. Зламаний рядок лишаємо як є: його відхилить zod в інструменті. */
@@ -152,8 +154,10 @@ export function chatCompletionsModel(o: AdapterOptions): Model {
         function: { name: t.name, description: t.description, parameters: t.jsonSchema },
       })),
     })) as ChatResponse;
-    const message = data.choices[0]?.message;
-    if (message === undefined) throw new Error('Відповідь без choices[0].message');
+    const message = data.choices?.[0]?.message;
+    if (message === undefined) {
+      throw new Error(`Відповідь без choices[0].message${data.error?.message ? `: ${data.error.message}` : ''}`);
+    }
     const calls: ToolCall[] = (message.tool_calls ?? []).map((c, i) => {
       const id = c.id ?? `call_${i}`;
       return { id, name: c.function.name, input: parseArguments(c.function.arguments), raw: { ...c, id } };
